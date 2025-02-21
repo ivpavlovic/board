@@ -12,6 +12,7 @@ const FormSchema = z.object({
   status: z.enum(["pending", "paid"]),
   date: z.string(),
 });
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 
@@ -41,7 +42,6 @@ export async function createInvoice(formData: FormData) {
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export async function deleteInvoice(id: string) {
-  throw new Error("Failed to Delete Invoice");
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath("/dashboard/invoices");
 }
